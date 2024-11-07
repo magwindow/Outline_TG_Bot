@@ -20,5 +20,6 @@ async def start_command(message: Message):
 async def make_new_key(message: Message):
     user_name = message.text[7:]
     key = outline_service.create_new_key(user_name)
-    await message.answer("Ваш ключ:\n" + key + "\n" + "Скачать Outline Client вы можете по ссылке: " +
-                         outline_download_link, reply_markup=get_keyboard())
+    await message.answer("Ваш ключ:\n\n" + "<code>" + key.access_url + "</code>" + "\n\n" +
+                         "Нажмите на него, чтобы скопировать\n" + "Скачать Outline Client вы можете по ссылке: "
+                         + outline_download_link, reply_markup=get_keyboard())
