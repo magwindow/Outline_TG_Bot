@@ -14,10 +14,10 @@ def main_keyboard():
 
 async def get_traffic_keyboard():
     keyboard_builder = InlineKeyboardBuilder()
-    keyboard_builder.button(text='0₽ | 3 дня (пробный период)', callback_data='hello')
+    keyboard_builder.button(text='0₽ | 3 дня (пробный период)', callback_data='trial')
     keyboard_builder.button(text='349₽ | 100ГБ/мес.', callback_data='month')
-    keyboard_builder.button(text='999₽ | 300ГБ/3 мес.', callback_data='3 month')
-    keyboard_builder.button(text='1999₽ | 600ГБ/6 мес.', callback_data='6 month')
+    keyboard_builder.button(text='999₽ | 300ГБ/3 мес.', callback_data='three_month')
+    keyboard_builder.button(text='1999₽ | 600ГБ/6 мес.', callback_data='six_month')
     keyboard_builder.button(text='3399₽ | Безлимит/год', callback_data='year')
     keyboard_builder.button(text='➕Пригласить друга', callback_data='guess friend')
     keyboard_builder.adjust(1, 2)

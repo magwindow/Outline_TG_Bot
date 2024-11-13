@@ -1,8 +1,8 @@
-from keyboards.inline_keyboard import main_keyboard, get_traffic_keyboard
+from keyboards.inline_keyboard import main_keyboard
 
-from aiogram import Router, Bot, F
+from aiogram import Router
 from aiogram.filters import CommandStart
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message
 
 outline_download_link = 'https://getoutline.org/ru/get-started/'
 
