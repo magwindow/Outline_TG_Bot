@@ -27,7 +27,7 @@ async def get_key_trial(call: CallbackQuery, bot: Bot):
     await bot.send_message(call.from_user.id,
                            "Ваш ключ:\n\n" + "<code>" + key.access_url + "</code>" + "\n\n" +
                            "Нажмите на него, чтобы скопировать\n" + "Скачать Outline Client вы можете по ссылке: "
-                           + outline_download_link, reply_markup=main_keyboard())
+                           + outline_download_link, reply_markup=await get_traffic_keyboard())
 
 
 @router_call.callback_query(F.data == 'month')
@@ -37,7 +37,7 @@ async def get_key_trial(call: CallbackQuery, bot: Bot):
     await bot.send_message(call.from_user.id,
                            "Ваш ключ:\n\n" + "<code>" + key.access_url + "</code>" + "\n\n" +
                            "Нажмите на него, чтобы скопировать\n" + "Скачать Outline Client вы можете по ссылке: "
-                           + outline_download_link, reply_markup=main_keyboard())
+                           + outline_download_link, reply_markup=await get_traffic_keyboard())
 
 
 @router_call.callback_query(F.data == 'three_month')
@@ -47,7 +47,7 @@ async def get_key_trial(call: CallbackQuery, bot: Bot):
     await bot.send_message(call.from_user.id,
                            "Ваш ключ:\n\n" + "<code>" + key.access_url + "</code>" + "\n\n" +
                            "Нажмите на него, чтобы скопировать\n" + "Скачать Outline Client вы можете по ссылке: "
-                           + outline_download_link, reply_markup=main_keyboard())
+                           + outline_download_link, reply_markup=await get_traffic_keyboard())
 
 
 @router_call.callback_query(F.data == 'six_month')
@@ -57,7 +57,7 @@ async def get_key_trial(call: CallbackQuery, bot: Bot):
     await bot.send_message(call.from_user.id,
                            "Ваш ключ:\n\n" + "<code>" + key.access_url + "</code>" + "\n\n" +
                            "Нажмите на него, чтобы скопировать\n" + "Скачать Outline Client вы можете по ссылке: "
-                           + outline_download_link, reply_markup=main_keyboard())
+                           + outline_download_link, reply_markup=await get_traffic_keyboard())
 
 
 @router_call.callback_query(F.data == 'year')
@@ -67,7 +67,7 @@ async def get_key_trial(call: CallbackQuery, bot: Bot):
     await bot.send_message(call.from_user.id,
                            "Ваш ключ:\n\n" + "<code>" + key.access_url + "</code>" + "\n\n" +
                            "Нажмите на него, чтобы скопировать\n" + "Скачать Outline Client вы можете по ссылке: "
-                           + outline_download_link, reply_markup=main_keyboard())
+                           + outline_download_link, reply_markup=await get_traffic_keyboard())
 
 
 @router_call.callback_query(F.data == 'traffic')
