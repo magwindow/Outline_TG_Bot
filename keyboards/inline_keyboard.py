@@ -22,3 +22,10 @@ async def get_traffic_keyboard():
     keyboard_builder.button(text='➕Пригласить друга', callback_data='guess friend')
     keyboard_builder.adjust(1, 2)
     return keyboard_builder.as_markup()
+
+
+async def payment_keyboard():
+    keyboard_builder = InlineKeyboardBuilder()
+    keyboard_builder.button(text='Оплатить', callback_data='payment')
+    keyboard_builder.button(text='Отмена', callback_data='cancel')
+    return keyboard_builder.as_markup()
