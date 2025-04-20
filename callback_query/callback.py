@@ -1,11 +1,17 @@
 from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery
 
+from keyboards.payment_keyboard import get_payment_methods_keyboard
 from outline_service import handle_invite
 from keyboards.inline_keyboard import main_keyboard, get_traffic_keyboard
 from outline_service import (create_new_key_trial, create_new_key_100, create_new_key_300,
                              create_new_key_600, create_new_key_no_limit)
 from database.models import async_session
+from dotenv import find_dotenv, load_dotenv
+
+from payments.fake_payment import handle_fake_payment
+
+load_dotenv(find_dotenv())
 
 router_call = Router()
 outline_download_link = 'https://getoutline.org/ru/get-started/'
@@ -14,7 +20,6 @@ outline_download_link = 'https://getoutline.org/ru/get-started/'
 KEY_GENERATORS = {
     'new_key': (create_new_key_trial, main_keyboard),
     'trial': (create_new_key_trial, get_traffic_keyboard),
-    'month': (create_new_key_100, get_traffic_keyboard),
     'three_month': (create_new_key_300, get_traffic_keyboard),
     'six_month': (create_new_key_600, get_traffic_keyboard),
     'year': (create_new_key_no_limit, get_traffic_keyboard)
@@ -30,12 +35,11 @@ async def handle_key_generation(call: CallbackQuery, bot: Bot):
     # Открываем сессию БД
     async with async_session() as session:
         key = await create_func(chat, user_name, session)  # Передаем сессию в функцию создания ключа
-        # keyboard = await keyboard_func(call.from_user.id) if callable(keyboard_func) else keyboard_func
         if callable(keyboard_func):
             if keyboard_func.__name__ == "main_keyboard":
                 keyboard = await keyboard_func(call.from_user.id)
             else:
-                keyboard = keyboard_func()
+                keyboard = await keyboard_func()
         else:
             keyboard = keyboard_func
 
@@ -61,3 +65,6 @@ async def get_traffic(call: CallbackQuery):
 async def invite_friend_callback(call: CallbackQuery):
     await call.answer()  # убирает "часики"
     await handle_invite(call.message)
+
+
+

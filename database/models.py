@@ -1,4 +1,4 @@
-from sqlalchemy import String, Integer, ForeignKey
+from sqlalchemy import String, BigInteger
 from sqlalchemy.ext.asyncio import AsyncAttrs, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from datetime import datetime
@@ -32,8 +32,8 @@ class OutlineKey(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     key_id: Mapped[str] = mapped_column(String(255))
     access_url: Mapped[str] = mapped_column(String(512))
-    chat_id: Mapped[int] = mapped_column(Integer)
-    user_name: Mapped[str] = mapped_column(String(255))
+    chat_id: Mapped[int] = mapped_column(BigInteger)
+    user_name: Mapped[str] = mapped_column(String(255), nullable=True)
     created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
 
 

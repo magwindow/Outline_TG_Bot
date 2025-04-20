@@ -24,8 +24,3 @@ async def get_traffic_keyboard():
     return keyboard_builder.as_markup()
 
 
-async def payment_keyboard():
-    keyboard_builder = InlineKeyboardBuilder()
-    keyboard_builder.button(text='Оплатить', callback_data='payment')
-    keyboard_builder.button(text='Отмена', callback_data='cancel')
-    return keyboard_builder.as_markup()

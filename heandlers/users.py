@@ -1,6 +1,6 @@
-from keyboards.inline_keyboard import main_keyboard, get_traffic_keyboard
+from keyboards.inline_keyboard import main_keyboard
 
-from aiogram import Router, F
+from aiogram import Router
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
