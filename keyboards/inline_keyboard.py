@@ -19,7 +19,7 @@ async def get_traffic_keyboard():
     keyboard_builder.button(text='999₽ | 300ГБ/3 мес.', callback_data='three_month')
     keyboard_builder.button(text='1999₽ | 600ГБ/6 мес.', callback_data='six_month')
     keyboard_builder.button(text='3399₽ | Безлимит/год', callback_data='year')
-    keyboard_builder.button(text='➕Пригласить друга', callback_data='guess friend')
+    keyboard_builder.button(text='➕Пригласить друга', callback_data='invite_friend')
     keyboard_builder.adjust(1, 2)
     return keyboard_builder.as_markup()
 

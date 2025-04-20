@@ -1,6 +1,6 @@
-from keyboards.inline_keyboard import main_keyboard
+from keyboards.inline_keyboard import main_keyboard, get_traffic_keyboard
 
-from aiogram import Router
+from aiogram import Router, F
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
@@ -13,6 +13,11 @@ router_users: Router = Router()
 async def start_command(message: Message):
     await message.answer(text='Привет! Добро пожаловать в бота, который поможет вам выбрать лучший VPN',
                          reply_markup=main_keyboard())
+
+
+
+
+
 
 
 
