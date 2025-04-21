@@ -1,5 +1,8 @@
 import os
 import json
+from datetime import datetime, timedelta
+
+import aiohttp
 import requests
 from aiogram.types import Message
 from urllib3.exceptions import InsecureRequestWarning
@@ -17,7 +20,7 @@ session = requests.Session()
 
 
 # Декоратор для создания ключа и обработки ошибок
-def create_key_decorator(limit=None):
+def create_key_decorator(limit=None, days_valid=None):
     def decorator(func):
         async def wrapper(chat, key_name, db_session: AsyncSession):
             requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -43,15 +46,22 @@ def create_key_decorator(limit=None):
             if limit is not None:
                 add_data_limit(key_id, limit)
 
-                # Записываем ключ в базу данных
-                outline_key = OutlineKey(
-                    key_id=key_id,
-                    access_url=access_url,
-                    user_name=key_name,
-                    chat_id=chat.id
-                )
-                db_session.add(outline_key)
-                await db_session.commit()  # Сохраняем запись в БД
+            # Расчет срока действия
+            expires_at = None
+            if days_valid is not None:
+                expires_at = datetime.utcnow() + timedelta(days=days_valid)
+
+            # Записываем ключ в базу данных
+            outline_key = OutlineKey(
+                key_id=key_id,
+                access_url=access_url,
+                user_name=key_name,
+                chat_id=chat.id,
+                total_limit_gb=round(limit / 1000 / 1000 / 1000, 2) if limit else 0,
+                expires_at=expires_at
+            )
+            db_session.add(outline_key)
+            await db_session.commit()  # Сохраняем запись в БД
 
             return Key(key_id, key_name, access_url, error_message)
 
@@ -64,33 +74,62 @@ def add_data_limit(key_id, limit_bytes):
     """Устанавливает ограничение на количество байт в ключе"""
     data = {"limit": {"bytes": limit_bytes}}
     response = session.put(f"{api_url}/access-keys/{key_id}/data-limit", json=data, verify=False)
+    if response.status_code != 204:
+        print(f"❗️Не удалось установить лимит на ключ {key_id}, статус: {response.status_code}")
+    return response.status_code == 204
+
+
+def delete_key(key_id: str) -> bool:
+    url = f"{api_url}/access-keys/{key_id}"
+    response = requests.delete(url, verify=False)
     return response.status_code == 204
 
 
 # Определяем функции с использованием декоратора
-@create_key_decorator(limit=1024 ** 3 * 9.5)  # Лимит 10 ГБ
+@create_key_decorator(limit=10 * 1000 ** 3, days_valid=3)  # Пробный: 10 ГБ, 3 дня
 def create_new_key_trial(chat, key_name, db_session: AsyncSession):
     pass
 
 
-@create_key_decorator(limit=1024 ** 3 * 93.5)  # Лимит 100 ГБ
+@create_key_decorator(limit=100 * 1000 ** 3, days_valid=30)  # Месяц: 100 ГБ
 def create_new_key_100(chat, key_name, db_session: AsyncSession):
     pass
 
 
-@create_key_decorator(limit=1024 ** 3 * 280)  # Лимит 300 ГБ
+@create_key_decorator(limit=300 * 1000 ** 3, days_valid=90)  # 3 месяца: 300 ГБ
 def create_new_key_300(chat, key_name, db_session: AsyncSession):
     pass
 
 
-@create_key_decorator(limit=1024 ** 3 * 559)  # Лимит 600 ГБ
+@create_key_decorator(limit=600 * 1000 ** 3, days_valid=180)  # 6 месяцев: 600 ГБ
 def create_new_key_600(chat, key_name, db_session: AsyncSession):
     pass
 
 
-@create_key_decorator()  # Без лимита
+@create_key_decorator(days_valid=365)  # Безлимит: 1 год
 def create_new_key_no_limit(chat, key_name, db_session: AsyncSession):
     pass
+
+
+async def get_key_traffic_async(key_id: str) -> float:
+    """
+    Возвращает объем использованного трафика в ГБ для указанного ключа
+    """
+    url = f"{api_url}/metrics/transfer"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, ssl=False) as response:
+            if response.status != 200:
+                print(f"❌ Ошибка запроса: {response.status}")
+                return 0.0
+            data = await response.json()
+            print(f"📊 Данные по трафику: {data}")
+            traffic_data = data.get("bytesTransferredByUserId", {})
+            bytes_used = traffic_data.get(key_id, 0)
+
+            if bytes_used == 0:
+                print(f"⚠️ Нет трафика для ключа ID: {key_id}")
+
+            return round(bytes_used / 1024 / 1024 / 1024, 2)
 
 
 async def handle_invite(message: Message):
@@ -103,5 +142,3 @@ async def handle_invite(message: Message):
         f"Просто отправь ему эту ссылку:\n\n{invite_url}",
         reply_markup=main_keyboard()
     )
-
-

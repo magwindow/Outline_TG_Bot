@@ -1,4 +1,4 @@
-from sqlalchemy import String, BigInteger
+from sqlalchemy import String, BigInteger, DateTime
 from sqlalchemy.ext.asyncio import AsyncAttrs, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from datetime import datetime
@@ -36,9 +36,12 @@ class OutlineKey(Base):
     user_name: Mapped[str] = mapped_column(String(255), nullable=True)
     created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
 
+    total_limit_gb: Mapped[float] = mapped_column(default=0.0)  # обновляется с API
+    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)  # дата окончания доступа
+
 
 # Подключение к БД и фабрика сессий
-engine = create_async_engine(DATABASE_URL, echo=True)
+engine = create_async_engine(DATABASE_URL, echo=False)
 async_session = async_sessionmaker(engine, expire_on_commit=False)
 
 

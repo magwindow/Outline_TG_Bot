@@ -12,6 +12,7 @@ from middlewares.trial_access import TrialAccessMiddleware
 from apshed import start_scheduler
 from payments.admin_panel import admin_router
 from payments.fake_payment import fake_payment_router
+from tasks import cleanup_expired_keys
 
 # Загрузка переменных окружения
 load_dotenv(find_dotenv())
@@ -26,6 +27,7 @@ bot: Bot = Bot(
 async def startup(dispatcher: Dispatcher):
     await init_models()  # Инициализация моделей БД
     start_scheduler(bot)  # Запуск планировщика
+    asyncio.create_task(cleanup_expired_keys())
     print('Bot is started!')
 
 
