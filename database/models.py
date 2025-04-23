@@ -6,6 +6,7 @@ import os
 
 # Загрузка переменных окружения
 from dotenv import load_dotenv
+
 load_dotenv()
 
 DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite+aiosqlite:///./db.sqlite3')
@@ -38,6 +39,23 @@ class OutlineKey(Base):
 
     total_limit_gb: Mapped[float] = mapped_column(default=0.0)  # обновляется с API
     expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)  # дата окончания доступа
+
+
+class VlessKey(Base):
+    __tablename__ = 'vless_keys'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    key_id: Mapped[str] = mapped_column(String(255))
+    uuid: Mapped[str] = mapped_column(String(255))  # UUID клиента
+    access_url: Mapped[str] = mapped_column(String(512))  # ссылка для подключения
+    chat_id: Mapped[int] = mapped_column(BigInteger)  # Telegram chat id
+    user_name: Mapped[str] = mapped_column(String(255), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+
+    total_limit_gb: Mapped[float] = mapped_column(default=0.0)  # лимит
+    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)  # срок действия
+    protocol: Mapped[str] = mapped_column(String(50), default="vless")  # на всякий случай
+    flow: Mapped[str] = mapped_column(String(255), nullable=True)  # flow типа xtls-rprx-vision
 
 
 # Подключение к БД и фабрика сессий

@@ -6,6 +6,7 @@ from aiogram.enums import ParseMode
 from aiogram.client.bot import DefaultBotProperties
 
 from callback_query.callback import router_call
+from get_vless import vless_router
 from heandlers.users import router_users
 from database.models import init_models
 from middlewares.trial_access import TrialAccessMiddleware
@@ -46,6 +47,7 @@ async def main():
     dp.include_router(router_call)
     dp.include_router(fake_payment_router)
     dp.include_router(admin_router)
+    dp.include_router(vless_router)
 
     # Подключаем события старта/остановки
     dp.startup.register(startup)

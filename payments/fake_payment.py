@@ -77,7 +77,7 @@ async def pay_sbp(call: CallbackQuery):
     tariff = user_tariff_selection.get(call.from_user.id, "month")
     price = TARIFFS.get(tariff, 349)
     await call.message.answer(
-        f"📲 Переведите {price}₽ по СБП на номер:\n\n<b>+7 999 111 25 25</b>\n"
+        f"📲 Переведите {price}₽ по СБП на номер и пришлите скриншот платежа:\n\n<b>+7 999 111 25 25</b>\n"
         "После перевода нажмите «Я оплатил»"
     )
 

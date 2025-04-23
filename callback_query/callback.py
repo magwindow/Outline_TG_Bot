@@ -14,7 +14,7 @@ load_dotenv(find_dotenv())
 router_call = Router()
 outline_download_link = 'https://getoutline.org/ru/get-started/'
 
-FREE_KEY_GENERATORS = {'trial': (create_new_key_trial, get_traffic_keyboard)}
+FREE_KEY_GENERATORS = {'trial_outline': (create_new_key_trial, get_traffic_keyboard)}
 
 
 @router_call.callback_query(F.data.in_(FREE_KEY_GENERATORS.keys()))

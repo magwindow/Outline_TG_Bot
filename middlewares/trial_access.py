@@ -7,7 +7,7 @@ from database.models import async_session, OutlineKey
 class TrialAccessMiddleware(BaseMiddleware):
     async def __call__(self, handler, event: CallbackQuery, data):
         # Проверяем только если пользователь жмёт на 'trial'
-        if event.data != 'trial':
+        if event.data != 'trial_outline':
             return await handler(event, data)
 
         user_id = event.from_user.id
@@ -16,8 +16,8 @@ class TrialAccessMiddleware(BaseMiddleware):
             used_trial = await self.has_used_trial(session, user_id)
 
             if used_trial:
-                await event.answer("Вы уже использовали бесплатный период.")
-                return  # ⚠️ Вот тут PyCharm и ругался: нужно вернуть awaitable
+                await event.answer("Вы уже использовали бесплатный период.", show_alert=True)
+                return
 
         # Если можно использовать пробный доступ — продолжаем выполнение
         return await handler(event, data)
